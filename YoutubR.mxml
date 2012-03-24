@@ -53,14 +53,14 @@
 				
 				
 				
-				videoPlayer.source = evt.feed.first().swfUrl;
-		
-				//videoPlayer.initialize();
 				
-				videoPlayer.play();
+		
+				
+				
+				
 				
 				loader.contentLoaderInfo.addEventListener(Event.INIT, onLoaderInit);
-				loader.load(new URLRequest("http://www.youtube.com/apiplayer?version=3"));
+				loader.load(new URLRequest(evt.feed.first().swfUrl));
 				
 			}
 			
@@ -95,11 +95,10 @@
 			}
 		]]>
 	</fx:Script>
-	<s:VideoPlayer id="videoPlayer" x="33" y="9"/>
 	
-	<s:SWFLoader id="swfLoader">
+	
+	<s:SWFLoader id="swfLoader" />
 		
-	</s:SWFLoader>
 	
 	
 	
