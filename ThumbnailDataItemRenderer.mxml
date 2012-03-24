@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true"
+				dataChange="creationCompleteHandler(event)"
+				>
+	<fx:Script>
+		<![CDATA[
+			import ca.newcommerce.youtube.data.VideoData;
+			
+			
+			[Bindable]
+			private var videoData:VideoData;
+			
+			
+			
+			private function creationCompleteHandler(evt:Event):void
+			{
+				videoData = data as VideoData;
+				
+				loadImg(videoData.media.thumbnails.first().url);
+				
+				
+			}
+			
+			private function loadImg(imgURL:String):void
+			{
+				
+				var myLoader:Loader = new Loader();
+				
+				myLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoaderReady);
+				
+				var fileRequest:URLRequest = new URLRequest(imgURL);
+				myLoader.load(fileRequest);
+			}
+			
+			public function onLoaderReady(evt:Event):void 
+			{  
+				
+				videoImg.source = evt.target.content as Bitmap;
+				dispatchEvent(new Event(Event.COMPLETE));
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<s:HGroup>
+		
+		
+		<s:Image id="videoImg" 
+				 width="50" height="50"/>
+		<s:VGroup>
+			
+			<s:Label id="videoTitle" text="{videoData.title}"/>
+			<s:Label id="videoAuthor" text="{videoData.authors.first().name}"/>
+		</s:VGroup>
+	</s:HGroup>
+	
+	
+
+	
+</s:ItemRenderer>

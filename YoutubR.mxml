@@ -9,20 +9,21 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import ca.newcommerce.youtube.data.ThumbnailData;
 			import ca.newcommerce.youtube.data.VideoData;
 			import ca.newcommerce.youtube.events.ProfileEvent;
 			import ca.newcommerce.youtube.events.VideoDataEvent;
 			import ca.newcommerce.youtube.events.VideoFeedEvent;
 			import ca.newcommerce.youtube.webservice.YouTubeFeedClient;
 			
-			import components.ThumbnailContainer;
-			
+			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			
 			
+			[Bindable]
+			public var thumbListProvider:ArrayCollection = new ArrayCollection();
 			
-			
-			
+		
 			
 			
 			protected function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
@@ -39,6 +40,9 @@
 				feedClient.getVideos("", "shaggitseg");
 				
 				
+				
+				thumbList.addEventListener(MouseEvent.DOUBLE_CLICK, thumbDoubleClicked);
+				
 			}
 			
 			
@@ -52,22 +56,41 @@
 			
 			private function videoDataRecievedHandler(evt:VideoFeedEvent):void
 			{
-				trace(evt.feed.first().swfUrl);
 				
 				
-				var thumbContainer:ThumbnailContainer = new ThumbnailContainer();
-				thumbContainer.init((evt.feed.first().media.thumbnails.first().url), evt.feed.first().title, evt.feed.first().authors.first().name);
+				var arr:ArrayCollection = new ArrayCollection();
+				var videoData:VideoData = evt.feed.first();
 				
-				addElement(thumbContainer);
-		
+				for (var i:Number=0; i<evt.feed.totalResults; i++)
+				{
+					
+					arr.addItem(videoData);
+					videoData = evt.feed.next();
+					
+					
+				}
 				
 				
+				thumbListProvider.addAll(arr);
+			
 				
 				
 				loader.contentLoaderInfo.addEventListener(Event.INIT, onLoaderInit);
 				//loader.load(new URLRequest(evt.feed.first().swfUrl));
 				
 			}
+			
+			
+			
+			
+			
+			private function thumbLoaded(evt:Event):void
+			{
+				thumbListProvider.addItem(evt.target);
+			}
+			
+			
+			
 			
 			
 			[Bindable]
@@ -103,9 +126,18 @@
 	
 	
 	<s:SWFLoader id="swfLoader" />
-	<s:List x="179" y="353"
-			id="list"></s:List>
+	
+<!--	<s:Scroller height="100%" id="listScroller"/>-->
+	
+	
 		
+		<s:List id="thumbList" itemRenderer="ThumbnailDataItemRenderer"
+				dataProvider="{thumbListProvider}"
+				width="50%" height="100%" />
+				
+		
+		
+	
 	
 	
 	
