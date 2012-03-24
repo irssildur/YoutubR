@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="200" height="60">
+	
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	
+	
+	
+	<fx:Script>
+		<![CDATA[
+			
+			private var _imgURL:String;
+			private var image:Bitmap;
+			[Bindable]
+			private var _title:String;
+			[Bindable]
+			private var _author:String;
+			
+			public function init(imgURL:String, title:String, author:String):void
+			{
+				
+				loadImg(imgURL);
+				_title = title;
+				_author = author;
+				
+				
+				
+			}
+			
+			private function loadImg(imgURL:String):void
+			{
+			
+				var myLoader:Loader = new Loader();
+				
+				myLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoaderReady);
+				
+				var fileRequest:URLRequest = new URLRequest(imgURL);
+				myLoader.load(fileRequest);
+			}
+				
+			public function onLoaderReady(evt:Event):void 
+			{  
+				
+				videoImg.source = evt.target.content as Bitmap;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:Image id="videoImg" x="10" y="10" 
+			 width="50" height="50"/>
+	<s:Label id="videoTitle" x="58" y="10" text="{_title}"/>
+	<s:Label id="videoAuthor" x="58" y="28" text="{_author}"/>
+	
+	
+	
+	
+	
+	
+</s:Group>

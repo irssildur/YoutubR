@@ -9,10 +9,13 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import ca.newcommerce.youtube.data.VideoData;
 			import ca.newcommerce.youtube.events.ProfileEvent;
 			import ca.newcommerce.youtube.events.VideoDataEvent;
 			import ca.newcommerce.youtube.events.VideoFeedEvent;
 			import ca.newcommerce.youtube.webservice.YouTubeFeedClient;
+			
+			import components.ThumbnailContainer;
 			
 			import mx.events.FlexEvent;
 			
@@ -52,15 +55,17 @@
 				trace(evt.feed.first().swfUrl);
 				
 				
+				var thumbContainer:ThumbnailContainer = new ThumbnailContainer();
+				thumbContainer.init((evt.feed.first().media.thumbnails.first().url), evt.feed.first().title, evt.feed.first().authors.first().name);
 				
-				
+				addElement(thumbContainer);
 		
 				
 				
 				
 				
 				loader.contentLoaderInfo.addEventListener(Event.INIT, onLoaderInit);
-				loader.load(new URLRequest(evt.feed.first().swfUrl));
+				//loader.load(new URLRequest(evt.feed.first().swfUrl));
 				
 			}
 			
@@ -98,7 +103,10 @@
 	
 	
 	<s:SWFLoader id="swfLoader" />
+	<s:List x="179" y="353"
+			id="list"></s:List>
 		
+	
 	
 	
 	
