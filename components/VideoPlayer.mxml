@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="init(event)">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -21,35 +22,49 @@
 			
 			protected var loader:Loader = new Loader();
 			
+			private var _videoData:VideoData;
+			
+			
+			
+			public function init(evt:Event):void
+			{
+			
+				loader.contentLoaderInfo.addEventListener(Event.INIT, onLoaderInit);
+				loader.load(new URLRequest("http://www.youtube.com/apiplayer?version=3"));
+			}
 			
 			public function load(videoData:VideoData):void
 			{
 				
+				_videoData = videoData;
+				
 				if (player != null)
 				{
-					swfLoader.unloadAndStop(true);
+					//swfLoader.unloadAndStop(true);
 					
 					//player.destroy();
 				}
 				
-				loader.contentLoaderInfo.addEventListener(Event.INIT, onLoaderInit);
-				loader.load(new URLRequest(videoData.swfUrl));
 				
-				
+				player.loadVideoByUrl(_videoData.swfUrl);
+				player.playVideo();
 			}
 			
 			
-			protected function onLoaderInit(event:Event):void {
+			protected function onLoaderInit(event:Event):void 
+			{
+				
 				loader.content.addEventListener("onReady", onPlayerReady);
 				
 			}
 			
-			protected function onPlayerReady(event:Event):void {
-				// Event.data contains the event parameter, which is the Player API ID 
-				trace("player ready:", Object(event).data);
+			protected function onPlayerReady(event:Event):void 
+			{
 				
 				player = loader.content;
 				player.setSize(240, 210);
+				
+				player.addEventListener("onError", playerError);
 				swfLoader.addEventListener(flash.events.IOErrorEvent.IO_ERROR , onSWFLoaderIoError);
 				swfLoader.autoLoad = true;
 				swfLoader.scaleContent = true;
@@ -58,11 +73,44 @@
 				
 				trace("getVideoUrl: ", player.getVideoUrl());
 				
-				player.playVideo();
+				
 				
 				
 				
 			}
+			
+			
+			private function playerError(evt:Event):void
+			{
+			
+				var errStr:String;
+				
+				switch (Object(evt).data)
+				{
+				
+					case 2:
+						
+						errStr = "Request contains an invalid parameter";
+						break;
+					
+					case 100:
+						
+						errStr = "The video requested is not found. The video has been removed (for any reason), or it has been marked as private";
+						break;
+					
+					case 101:
+						
+						errStr = "The video requested does not allow playback in the embedded players";
+						break;
+					
+					case 150:
+						errStr = "The video requested does not allow playback in the embedded players";
+						break;
+				}
+				Alert.show(errStr, Object(evt).data, Alert.OK);
+					
+			}
+			
 			
 			
 			private function onSWFLoaderIoError(evt:IOErrorEvent):void
