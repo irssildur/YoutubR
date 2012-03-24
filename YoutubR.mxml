@@ -2,7 +2,7 @@
 <s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
-					   creationComplete="windowedapplication1_creationCompleteHandler(event)">
+					   creationComplete="windowedapplication1_creationCompleteHandler(event)" xmlns:components="components.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -50,7 +50,7 @@
 			{
 				if (evt.bubbles)
 				{
-					Alert.show((evt.currentTarget.selectedItems[0] as VideoData).actualId, "", Alert.OK);
+					player.load(evt.currentTarget.selectedItems[0]);
 				}
 			}
 			
@@ -86,8 +86,7 @@
 			
 				
 				
-				loader.contentLoaderInfo.addEventListener(Event.INIT, onLoaderInit);
-				//loader.load(new URLRequest(evt.feed.first().swfUrl));
+			
 				
 			}
 			
@@ -104,43 +103,17 @@
 			
 			
 			
-			[Bindable]
-			protected var player:Object;
 			
-			protected var loader:Loader = new Loader();
-			
-			
-			protected function onLoaderInit(event:Event):void {
-				loader.content.addEventListener("onReady", onPlayerReady);
-				
-			}
-			
-			protected function onPlayerReady(event:Event):void {
-				// Event.data contains the event parameter, which is the Player API ID 
-				trace("player ready:", Object(event).data);
-				
-				player = loader.content;
-				player.setSize(240, 210);
-				//swfLoader.addEventListener(flash.events.IOErrorEvent.IO_ERROR , onSWFLoaderIoError);
-				swfLoader.autoLoad = true;
-				swfLoader.scaleContent = true;
-				swfLoader.maintainAspectRatio = true;
-				swfLoader.load(player);
-				
-		
-				
-				player.playVideo();
-			
-			}
 		]]>
 	</fx:Script>
 	
 	
-	<s:SWFLoader id="swfLoader" />
-	
-<!--	<s:Scroller height="100%" id="listScroller"/>-->
 	
 	
+
+	
+	<s:HGroup>
+		
 		
 		<s:List id="thumbList" itemRenderer="ThumbnailDataItemRenderer"
 				dataProvider="{thumbListProvider}"
@@ -149,7 +122,10 @@
 				
 		
 		
+		<components:VideoPlayer id="player" 
+								width="50%"/>
 	
+	</s:HGroup>
 	
 	
 	

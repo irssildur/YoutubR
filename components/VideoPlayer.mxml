@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import ca.newcommerce.youtube.data.VideoData;
+			
+			import mx.controls.Alert;
+			
+			import org.osmf.elements.SWFLoader;
+			
+			[Bindable]
+			protected var player:Object;
+			
+			protected var loader:Loader = new Loader();
+			
+			
+			public function load(videoData:VideoData):void
+			{
+				
+				if (player != null)
+				{
+					swfLoader.unloadAndStop(true);
+					
+					//player.destroy();
+				}
+				
+				loader.contentLoaderInfo.addEventListener(Event.INIT, onLoaderInit);
+				loader.load(new URLRequest(videoData.swfUrl));
+				
+				
+			}
+			
+			
+			protected function onLoaderInit(event:Event):void {
+				loader.content.addEventListener("onReady", onPlayerReady);
+				
+			}
+			
+			protected function onPlayerReady(event:Event):void {
+				// Event.data contains the event parameter, which is the Player API ID 
+				trace("player ready:", Object(event).data);
+				
+				player = loader.content;
+				player.setSize(240, 210);
+				swfLoader.addEventListener(flash.events.IOErrorEvent.IO_ERROR , onSWFLoaderIoError);
+				swfLoader.autoLoad = true;
+				swfLoader.scaleContent = true;
+				swfLoader.maintainAspectRatio = true;
+				swfLoader.load(player);
+				
+				trace("getVideoUrl: ", player.getVideoUrl());
+				
+				player.playVideo();
+				
+				
+				
+			}
+			
+			
+			private function onSWFLoaderIoError(evt:IOErrorEvent):void
+			{
+			
+				Alert.show(evt.errorID.toString(), "", Alert.OK);
+			}
+		
+			
+		]]>
+	</fx:Script>
+	
+	<s:SWFLoader id="swfLoader" />
+	
+	
+	
+</s:Group>
