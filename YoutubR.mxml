@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   creationComplete="windowedapplication1_creationCompleteHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import ca.newcommerce.youtube.events.ProfileEvent;
+			import ca.newcommerce.youtube.events.VideoDataEvent;
+			import ca.newcommerce.youtube.events.VideoFeedEvent;
+			import ca.newcommerce.youtube.webservice.YouTubeFeedClient;
+			
+			import mx.events.FlexEvent;
+			
+			
+			
+			
+			
+			
+			
+			protected function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
+			{
+
+				var feedClient:YouTubeFeedClient = new YouTubeFeedClient();
+				
+				feedClient.addEventListener(ProfileEvent.PROFILE_DATA_RECEIVED, profileDataRecieved);
+				
+				feedClient.getUserProfile("shagbeckur");
+				
+				feedClient.addEventListener(VideoFeedEvent.VIDEO_DATA_RECEIVED, videoDataRecievedHandler);
+				
+				feedClient.getVideos("", "shaggitseg");
+				
+				
+			}
+			
+			
+			private function profileDataRecieved(evt:ProfileEvent):void
+			{
+				
+				trace(evt.profile);
+			
+			}
+			
+			
+			private function videoDataRecievedHandler(evt:VideoFeedEvent):void
+			{
+				trace(evt.feed.first().swfUrl);
+				
+				
+				
+				videoPlayer.source = evt.feed.first().swfUrl;
+		
+				//videoPlayer.initialize();
+				
+				videoPlayer.play();
+				
+				loader.contentLoaderInfo.addEventListener(Event.INIT, onLoaderInit);
+				loader.load(new URLRequest("http://www.youtube.com/apiplayer?version=3"));
+				
+			}
+			
+			
+			[Bindable]
+			protected var player:Object;
+			
+			protected var loader:Loader = new Loader();
+			
+			
+			protected function onLoaderInit(event:Event):void {
+				loader.content.addEventListener("onReady", onPlayerReady);
+				
+			}
+			
+			protected function onPlayerReady(event:Event):void {
+				// Event.data contains the event parameter, which is the Player API ID 
+				trace("player ready:", Object(event).data);
+				
+				player = loader.content;
+				player.setSize(240, 210);
+				//swfLoader.addEventListener(flash.events.IOErrorEvent.IO_ERROR , onSWFLoaderIoError);
+				swfLoader.autoLoad = true;
+				swfLoader.scaleContent = true;
+				swfLoader.maintainAspectRatio = true;
+				swfLoader.load(player);
+				
+		
+				
+				player.playVideo();
+			
+			}
+		]]>
+	</fx:Script>
+	<s:VideoPlayer id="videoPlayer" x="33" y="9"/>
+	
+	<s:SWFLoader id="swfLoader">
+		
+	</s:SWFLoader>
+	
+	
+	
+</s:WindowedApplication>
