@@ -17,6 +17,7 @@
 			import ca.newcommerce.youtube.webservice.YouTubeFeedClient;
 			
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			
 			
@@ -44,6 +45,16 @@
 				thumbList.addEventListener(MouseEvent.DOUBLE_CLICK, thumbDoubleClicked);
 				
 			}
+			
+			public function thumbDoubleClicked(evt:MouseEvent):void
+			{
+				if (evt.bubbles)
+				{
+					Alert.show((evt.currentTarget.selectedItems[0] as VideoData).actualId, "", Alert.OK);
+				}
+			}
+			
+			
 			
 			
 			private function profileDataRecieved(evt:ProfileEvent):void
@@ -133,7 +144,8 @@
 		
 		<s:List id="thumbList" itemRenderer="ThumbnailDataItemRenderer"
 				dataProvider="{thumbListProvider}"
-				width="50%" height="100%" />
+				width="50%" height="100%" 
+				doubleClickEnabled="true"/>
 				
 		
 		

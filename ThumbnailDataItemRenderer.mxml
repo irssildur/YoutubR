@@ -52,8 +52,12 @@
 				 width="50" height="50"/>
 		<s:VGroup>
 			
-			<s:Label id="videoTitle" text="{videoData.title}"/>
-			<s:Label id="videoAuthor" text="{videoData.authors.first().name}"/>
+			<s:Label id="videoTitle" 
+					 text="{videoData.title}"
+					 width="80%"/>
+			<s:Label id="videoAuthor" 
+					 text="{videoData.authors.first().name}"
+					 width="80%"/>
 		</s:VGroup>
 	</s:HGroup>
 	
